@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/utils/connectDB';
 import { getAuth } from '@clerk/nextjs/server';
-import Product from '@/models/product';
-import User from '@/models/user';
-import Order from '@/models/order';
-import { inngest } from '@/lib/inngest'; // assuming you have this setup
-
+import Product from '@/models/Product';
+import User from '@/models/User';
+import Order from '@/models/Order';
+import { inngest } from '@/config/inngest'; 
 export async function POST(request) {
   try {
     await connectDB();
