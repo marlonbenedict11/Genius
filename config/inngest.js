@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import connectDB from "./db";
-import User from "../models/User"; 
+import User from '../models/User'; 
 import Order from "../models/Order";
 
 export const inngest = new Inngest({ 
@@ -8,18 +8,18 @@ export const inngest = new Inngest({
   retries: 3, 
 });
 
-// Handle Clerk user creation
+// Inngest function to save data to a database
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-from-clerk" },
-  { event: "clerk/user.created" },
+  { id: 'sync-user-from-clerk' },
+  { event: 'clerk/user.created' },
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } = event.data;
-
+    
     const userData = {
       _id: id,
-      email: email_addresses[0]?.email_address || "", 
-      name: `${first_name} ${last_name}`,
-      imageUrl: image_url,
+      email: email_addresses[0].email_address, 
+      name: first_name + ' ' + last_name, 
+      imageUrl: image_url
     };
 
     await connectDB();
@@ -27,57 +27,69 @@ export const syncUserCreation = inngest.createFunction(
   }
 );
 
-// Handle Clerk user update
+// Inngest function to update user data in the database
 export const syncUserUpdation = inngest.createFunction(
-  { id: "update-user-from-clerk" },
-  { event: "clerk/user.updated" },
+  { id: 'update-user-from-clerk' },
+  { event: 'clerk/user.updated' },
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } = event.data;
-
-    const updatedData = {
-      email: email_addresses[0]?.email_address || "",
-      name: `${first_name} ${last_name}`,
-      imageUrl: image_url,
+    
+    const userData = {
+      email: email_addresses[0].email_address,
+      name: first_name + ' ' + last_name,
+      imageUrl: image_url
     };
 
     await connectDB();
-    await User.findByIdAndUpdate(id, updatedData);
+    await User.findByIdAndUpdate(id, userData);
   }
 );
 
-// Handle Clerk user deletion
+// Inngest function to delete user from the database
 export const syncUserDeletion = inngest.createFunction(
-  { id: "delete-user-with-clerk" },
-  { event: "clerk/user.deleted" },
+  { id: 'delete-user-with-clerk' },
+  { event: 'clerk/user.deleted' },
   async ({ event }) => {
-    const { id } = event; // ✅ FIXED: Access ID from event root
+    const { id } = event.data;
     await connectDB();
     await User.findByIdAndDelete(id);
   }
 );
 
-// Batch create orders
+// Inngest function to create user's order in the database
 export const createUserOrder = inngest.createFunction(
   {
     id: "create-user-order",
-    batchEvents: {
-      event: "order/created",
+    batchEvents: { 
       maxSize: 5,
       timeout: "5s",
     },
   },
+  { event: "order/created" },
   async ({ events }) => {
-    const orders = events.map(({ data }) => ({
-      userId: data.userId,
-      items: data.items,
-      amount: data.amount,
-      address: data.address,
-      date: data.date,
-    }));
+    const orders = events
+      .filter(event => event.data?.userId && event.data?.items?.length > 0)
+      .map(event => ({
+        userId: event.data.userId,
+        items: event.data.items,
+        amount: event.data.amount,
+        address: event.data.address,
+        date: event.data.date || new Date(),
+      }));
 
-    await connectDB();
-    await Order.insertMany(orders);
+    if (orders.length === 0) {
+      console.warn("No valid orders to insert.");
+      return { success: false, error: "No valid orders to process." };
+    }
 
-    return { success: true, processed: orders.length };
+    try {
+      await connectDB();
+      await Order.insertMany(orders);
+      console.log(`Inserted ${orders.length} orders`);
+      return { success: true, processed: orders.length };
+    } catch (error) {
+      console.error("Error inserting orders:", error);
+      return { success: false, error: error.message };
+    }
   }
 );
