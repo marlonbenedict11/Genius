@@ -1,32 +1,48 @@
-import { getAuth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import Product from "@/models/Product";
-import User from "@/models/User";
-import { inngest } from "@/config/inngest";
-import connectDB from "@/config/db"; // If not already handled globally
+import { NextResponse } from 'next/server';
+import connectDB from '@/utils/connectDB';
+import { getAuth } from '@clerk/nextjs/server';
+import Product from '@/models/product';
+import User from '@/models/user';
+import Order from '@/models/order';
+import { inngest } from '@/lib/inngest'; // assuming you have this setup
 
 export async function POST(request) {
   try {
-    await connectDB(); // Ensure DB connection
+    await connectDB();
 
     const { userId } = await getAuth(request);
-    const { address, items } = await request.json();
+    if (!userId) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
 
+    const { address, items } = await request.json();
     if (!address || !items || items.length === 0) {
-      return NextResponse.json({ success: false, message: 'Invalid data' });
+      return NextResponse.json({ success: false, message: 'Invalid data' }, { status: 400 });
     }
 
     let amount = 0;
-    for (const item of items) {
-      const product = await Product.findById(item.product);
+    const products = await Promise.all(items.map(item => Product.findById(item.product)));
+
+    for (let i = 0; i < items.length; i++) {
+      const product = products[i];
       if (!product) {
-        return NextResponse.json({ success: false, message: `Product with ID ${item.product} not found` });
+        return NextResponse.json({ success: false, message: `Product with ID ${items[i].product} not found` }, { status: 404 });
       }
-      amount += product.offerPrice * item.quantity;
+      amount += product.offerPrice * items[i].quantity;
     }
 
     amount += Math.floor(amount * 0.02); // Add 2% fee
 
+    // ✅ Save order to DB
+    const newOrder = await Order.create({
+      userId,
+      items,
+      address,
+      amount,
+      date: new Date(),
+    });
+
+    // Send order created event
     await inngest.send({
       name: 'order/created',
       data: {
@@ -34,20 +50,27 @@ export async function POST(request) {
         address,
         items,
         amount,
-        date: new Date().toISOString(),
+        date: newOrder.date.toISOString(),
       },
     });
 
+    // Clear user's cart
     const user = await User.findById(userId);
     if (user) {
       user.cartItems = {};
       await user.save();
     }
 
-    return NextResponse.json({ success: true, message: 'Order placed successfully' });
+    return NextResponse.json({
+      success: true,
+      message: 'Order placed successfully',
+      amount,
+      orderId: newOrder._id,
+      items,
+    }, { status: 200 });
 
   } catch (error) {
     console.error("Error in order POST:", error);
-    return NextResponse.json({ success: false, message: error.message });
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

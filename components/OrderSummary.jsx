@@ -11,7 +11,7 @@ const OrderSummary = () => {
     getCartAmount,
     getToken,
     user,
-    cardItems,
+    cartItems = {},
     setCartItems,
   } = useAppContext();
 
@@ -48,17 +48,29 @@ const OrderSummary = () => {
   };
 
   const createOrder = async () => {
-    if (!selectedAddress) {
-      toast.error("Please select a shipping address.");
-      return;
-    }
-
     try {
+      if (!selectedAddress?._id) {
+        toast.error("Please select an address.");
+        return;
+      }
+
+      let cartItemsArray = Object.entries(cartItems)
+        .map(([productId, quantity]) => ({
+          product: productId,
+          quantity,
+        }))
+        .filter((item) => item.quantity > 0);
+
+      if (cartItemsArray.length === 0) {
+        return toast.error("Cart is empty");
+      }
+
       const token = await getToken();
       const { data } = await axios.post(
         "/api/order/create",
         {
-          addressId: selectedAddress._id,
+          address: selectedAddress._id, // Send only the ID
+          items: cartItemsArray,
           promoCode,
         },
         {
@@ -68,7 +80,8 @@ const OrderSummary = () => {
 
       if (data.success) {
         toast.success("Order placed successfully!");
-        router.push("/order-confirmation");
+        setCartItems({});
+        router.push("/order-placed");
       } else {
         toast.error(data.message || "Failed to place order.");
       }
@@ -88,9 +101,7 @@ const OrderSummary = () => {
 
   return (
     <div className="w-full md:w-96 bg-gray-500/5 p-5">
-      <h2 className="text-xl md:text-2xl font-medium text-gray-700">
-        Order Summary
-      </h2>
+      <h2 className="text-xl md:text-2xl font-medium text-gray-700">Order Summary</h2>
       <hr className="border-gray-500/30 my-5" />
 
       <div className="space-y-6">
@@ -135,8 +146,7 @@ const OrderSummary = () => {
                     className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
                     onClick={() => handleAddressSelect(address)}
                   >
-                    {address.fullName}, {address.area}, {address.city},{" "}
-                    {address.state}
+                    {address.fullName}, {address.area}, {address.city}, {address.state}
                   </li>
                 ))}
                 <li
