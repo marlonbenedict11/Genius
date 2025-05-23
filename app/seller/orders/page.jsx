@@ -11,7 +11,6 @@ import toast from "react-hot-toast";
 
 const Orders = () => {
   const { currency, getToken, user } = useAppContext();
-
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +27,7 @@ const Orders = () => {
         toast.error(data.message || "Failed to fetch orders");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred");
+      toast.error(error?.response?.data?.message || error.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -39,43 +38,51 @@ const Orders = () => {
   }, [user]);
 
   return (
-    <div className="flex-1 h-screen overflow-scroll flex flex-col justify-between text-sm">
+    <div className="flex-1 h-screen overflow-auto flex flex-col justify-between text-sm bg-gray-50">
       {loading ? (
         <Loading />
       ) : (
         <div className="md:p-10 p-4 space-y-5">
-          <h2 className="text-lg font-medium">Orders</h2>
-          <div className="max-w-4xl rounded-md">
+          <h2 className="text-xl font-semibold text-gray-800">Orders</h2>
+          <div className="space-y-4 max-w-5xl">
             {orders.length > 0 ? orders.map((order) => (
-              <div key={order._id} className="flex flex-col md:flex-row gap-5 justify-between p-5 border-t border-gray-300">
-                <div className="flex-1 flex gap-5 max-w-80">
+              <div
+                key={order._id}
+                className="flex flex-col md:flex-row gap-5 justify-between p-5 bg-white rounded-lg shadow-sm border border-gray-200"
+              >
+                {/* Order Details */}
+                <div className="flex-1 flex gap-5">
                   <Image
-                    className="max-w-16 max-h-16 object-cover"
+                    className="w-16 h-16 object-cover"
                     src={assets.box_icon}
                     alt="box_icon"
                   />
-                  <p className="flex flex-col gap-3">
-                    <span className="font-medium">
+                  <div>
+                    <p className="font-medium text-gray-700">
                       {order.items.map(item => `${item.product?.name} x ${item.quantity}`).join(", ")}
-                    </span>
-                    <span>Items: {order.items.length}</span>
-                  </p>
+                    </p>
+                    <p className="text-gray-500 text-sm">Items: {order.items.length}</p>
+                  </div>
                 </div>
-                <div>
-                  <p>
-                    <span className="font-medium">{order.address?.fullName}</span><br />
-                    <span>{order.address?.area}</span><br />
-                    <span>{`${order.address?.city}, ${order.address?.state}`}</span><br />
-                    <span>{order.address?.phoneNumber}</span>
-                  </p>
+
+                {/* Address */}
+                <div className="text-gray-600 text-sm">
+                  <p className="font-medium text-gray-800">{order.address?.fullName}</p>
+                  <p>{order.address?.area}</p>
+                  <p>{`${order.address?.city}, ${order.address?.state}`}</p>
+                  <p>{order.address?.phoneNumber}</p>
                 </div>
-                <p className="font-medium my-auto">{currency}{order.amount}</p>
-                <div>
-                  <p className="flex flex-col">
-                    <span>Method: COD</span>
-                    <span>Date: {new Date(order.date).toLocaleDateString()}</span>
-                    <span>Payment: Pending</span>
-                  </p>
+
+                {/* Amount */}
+                <p className="text-green-600 font-semibold my-auto whitespace-nowrap">
+                  {currency}{order.amount}
+                </p>
+
+                {/* Status */}
+                <div className="text-sm text-gray-600 my-auto">
+                  <p>Method: <span className="font-medium">COD</span></p>
+                  <p>Date: {new Date(order.date).toLocaleDateString()}</p>
+                  <p>Payment: <span className="text-red-500 font-medium">Pending</span></p>
                 </div>
               </div>
             )) : (

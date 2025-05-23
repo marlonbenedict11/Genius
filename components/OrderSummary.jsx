@@ -19,6 +19,11 @@ const OrderSummary = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userAddresses, setUserAddresses] = useState([]);
   const [promoCode, setPromoCode] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true); // Prevent SSR mismatch
+  }, []);
 
   const fetchUserAddresses = async () => {
     try {
@@ -54,7 +59,7 @@ const OrderSummary = () => {
         return;
       }
 
-      let cartItemsArray = Object.entries(cartItems)
+      const cartItemsArray = Object.entries(cartItems)
         .map(([productId, quantity]) => ({
           product: productId,
           quantity,
@@ -69,7 +74,7 @@ const OrderSummary = () => {
       const { data } = await axios.post(
         "/api/order/create",
         {
-          address: selectedAddress._id, 
+          address: selectedAddress._id,
           items: cartItemsArray,
           promoCode,
         },
@@ -110,10 +115,11 @@ const OrderSummary = () => {
           <label className="text-base font-medium uppercase text-gray-600 block mb-2">
             Select Address
           </label>
-          <div className="relative inline-block w-full text-sm border">
+          <div className="relative w-full text-sm border">
             <button
+              type="button"
               className="peer w-full text-left px-4 pr-2 py-2 bg-white text-gray-700 focus:outline-none"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
             >
               <span>
                 {selectedAddress
@@ -129,22 +135,17 @@ const OrderSummary = () => {
                 viewBox="0 0 24 24"
                 stroke="#6B7280"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
-            {isDropdownOpen && (
+            {isMounted && isDropdownOpen && (
               <ul className="absolute w-full bg-white border shadow-md mt-1 z-10 py-1.5 max-h-64 overflow-y-auto">
                 {userAddresses.map((address, index) => (
                   <li
                     key={index}
-                    className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
                     onClick={() => handleAddressSelect(address)}
+                    className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
                   >
                     {address.fullName}, {address.area}, {address.city}, {address.state}
                   </li>
@@ -171,7 +172,7 @@ const OrderSummary = () => {
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
               placeholder="Enter promo code"
-              className="flex-grow w-full outline-none p-2.5 text-gray-600 border"
+              className="w-full outline-none p-2.5 text-gray-600 border"
             />
             <button
               onClick={() => toast.success("Promo applied (mock)")}

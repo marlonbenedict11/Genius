@@ -24,12 +24,14 @@ const MyOrders = () => {
 
       if (data.success) {
         setOrders(data.orders);
-        setLoading(false);
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to fetch orders.");
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Fetch orders error:", error);
+      toast.error("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,59 +45,53 @@ const MyOrders = () => {
       <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen">
         <div className="space-y-5">
           <h2 className="text-lg font-medium mt-6">My Orders</h2>
+
           {loading ? (
             <Loading />
+          ) : orders.length === 0 ? (
+            <p className="text-gray-500 text-sm mt-6">You have no orders yet.</p>
           ) : (
             <div className="max-w-5xl border-t border-gray-300 text-sm">
               {orders.map((order, index) => (
                 <div
-                  key={index}
+                  key={order._id || index}
                   className="flex flex-col md:flex-row gap-5 justify-between p-5 border-b border-gray-300"
                 >
                   <div className="flex-1 flex gap-5 max-w-80">
                     <Image
                       src={assets.box_icon}
-                      alt="box_icon"
+                      alt="Order Icon"
                       width={64}
                       height={64}
                       className="object-cover"
                     />
-                    <p className="flex flex-col gap-3">
-                      <span className="font-medium text-base">
+                    <div className="flex flex-col gap-2">
+                      <p className="font-medium text-base">
                         {order.items?.map((item) =>
                           item.product?.name
                             ? `${item.product.name} x ${item.quantity}`
                             : ''
                         ).join(", ")}
-                      </span>
-                      <span>Items : {order.items?.length || 0}</span>
-                    </p>
+                      </p>
+                      <p>Items: {order.items?.length || 0}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p>
-                      <span className="font-medium">
-                        {order.address?.fullName}
-                      </span>
-                      <br />
-                      <span>{order.address?.area}</span>
-                      <br />
-                      <span>{`${order.address?.city}, ${order.address?.state}`}</span>
-                      <br />
-                      <span>{order.address?.phoneNumber}</span>
-                    </p>
+
+                  <div className="min-w-[180px]">
+                    <p className="font-medium">{order.address?.fullName}</p>
+                    <p>{order.address?.area}</p>
+                    <p>{`${order.address?.city}, ${order.address?.state}`}</p>
+                    <p>{order.address?.phoneNumber}</p>
                   </div>
-                  <p className="font-medium my-auto">
-                    {currency}
-                    {order.amount}
-                  </p>
-                  <div>
-                    <p className="flex flex-col">
-                      <span>Method : COD</span>
-                      <span>
-                        Date : {new Date(order.date).toLocaleDateString()}
-                      </span>
-                      <span>Payment : Pending</span>
-                    </p>
+
+                  <div className="font-medium my-auto min-w-[100px]">
+                    {currency}{order.amount}
+                  </div>
+
+                  <div className="min-w-[140px]">
+                    <p>Method: COD</p>
+                    <p>Date: {new Date(order.date).toLocaleDateString()}</p>
+                    <p>Payment: Pending</p>
                   </div>
                 </div>
               ))}

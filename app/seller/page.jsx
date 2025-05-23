@@ -6,10 +6,8 @@ import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-
 const AddProduct = () => {
-
-  const { getToken} = useAppContext()
+  const { getToken } = useAppContext();
 
   const [files, setFiles] = useState([]);
   const [name, setName] = useState('');
@@ -17,6 +15,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState('Earphone');
   const [price, setPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
+  const [submitting, setSubmitting] = useState(false); // added
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,10 +31,11 @@ const AddProduct = () => {
     formData.append('offerPrice', offerPrice);
 
     for (let i = 0; i < files.length; i++) {
-      formData.append('images',files[i])
-      
+      formData.append('images', files[i]);
     }
+
     try {
+      setSubmitting(true); // start loading
       const token = await getToken();
       const { data } = await axios.post('/api/product/add', formData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -43,20 +43,20 @@ const AddProduct = () => {
 
       if (data.success) {
         toast.success(data.message);
-          setFiles([]);
-          setName('');
-          setDescription('');
-          setCategory('Earphone');
-          setPrice('');
-          setOfferPrice('');
-  
+        setFiles([]);
+        setName('');
+        setDescription('');
+        setCategory('Earphone');
+        setPrice('');
+        setOfferPrice('');
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setSubmitting(false); // stop loading
     }
-
   };
 
   return (
@@ -65,16 +65,19 @@ const AddProduct = () => {
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
-
             {[...Array(4)].map((_, index) => (
               <label key={index} htmlFor={`image${index}`}>
-                <input onChange={(e) => {
-                  const updatedFiles = [...files];
-                  updatedFiles[index] = e.target.files[0];
-                  setFiles(updatedFiles);
-                }} type="file" id={`image${index}`} hidden />
+                <input
+                  onChange={(e) => {
+                    const updatedFiles = [...files];
+                    updatedFiles[index] = e.target.files[0];
+                    setFiles(updatedFiles);
+                  }}
+                  type="file"
+                  id={`image${index}`}
+                  hidden
+                />
                 <Image
-                  key={index}
                   className="max-w-24 cursor-pointer"
                   src={files[index] ? URL.createObjectURL(files[index]) : assets.upload_area}
                   alt=""
@@ -83,7 +86,6 @@ const AddProduct = () => {
                 />
               </label>
             ))}
-
           </div>
         </div>
         <div className="flex flex-col gap-1 max-w-md">
@@ -101,10 +103,7 @@ const AddProduct = () => {
           />
         </div>
         <div className="flex flex-col gap-1 max-w-md">
-          <label
-            className="text-base font-medium"
-            htmlFor="product-description"
-          >
+          <label className="text-base font-medium" htmlFor="product-description">
             Product Description
           </label>
           <textarea
@@ -125,8 +124,8 @@ const AddProduct = () => {
             <select
               id="category"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+              value={category}
               onChange={(e) => setCategory(e.target.value)}
-              defaultValue={category}
             >
               <option value="Earphone">Earphone</option>
               <option value="Headphone">Headphone</option>
@@ -168,11 +167,16 @@ const AddProduct = () => {
             />
           </div>
         </div>
-        <button type="submit" className="px-8 py-2.5 bg-orange-600 text-white font-medium rounded">
-          ADD
+        <button
+          type="submit"
+          disabled={submitting}
+          className={`px-8 py-2.5 text-white font-medium rounded transition-colors ${
+            submitting ? 'bg-orange-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'
+          }`}
+        >
+          {submitting ? 'Adding...' : 'ADD'}
         </button>
       </form>
-      {/* <Footer /> */}
     </div>
   );
 };
