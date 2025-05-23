@@ -1,6 +1,8 @@
+'use client';
 import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -21,16 +23,16 @@ const Footer = () => {
             <h2 className="font-medium text-gray-900 mb-5">Company</h2>
             <ul className="text-sm space-y-2">
               <li>
-                <a className="hover:underline transition" href="#">Home</a>
+                <Link href="/" className="hover:underline transition">Home</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">About us</a>
+                <Link href="/about-us" className="hover:underline transition">About us</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">Contact us</a>
+                <Link href="/contact-us" className="hover:underline transition">Contact us</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">Privacy policy</a>
+                <Link href="/" className="hover:underline transition">Privacy policy</Link>
               </li>
             </ul>
           </div>
