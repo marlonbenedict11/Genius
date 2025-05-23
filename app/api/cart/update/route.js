@@ -15,7 +15,7 @@ export async function POST(request) {
     const { cartData } = await request.json();
     await connectDB();
 
-    const user = await User.findById(userId); // ✅ Change here
+    const user = await User.findById(userId); 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }

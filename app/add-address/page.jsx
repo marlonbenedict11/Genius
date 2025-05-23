@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
-import { toast } from "react-hot-toast"; // Make sure toast is imported
+import { toast } from "react-hot-toast"; 
 
 const AddAddress = () => {
   const { getToken, router } = useAppContext();

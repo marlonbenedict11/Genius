@@ -1,25 +1,31 @@
-/* globals.css */
-
 @tailwind base;
-/* Add this line */
 @tailwind components;
-/* Add this line */
 @tailwind utilities;
-/* Add this line */
-
-* {
-  scroll-behavior: smooth;
-}
 
 @layer base {
 
+  /* Smooth scrolling across all elements */
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Remove number input spin buttons for WebKit browsers */
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-}
 
-::-webkit-scrollbar {
-  display: none;
+  /* Remove scrollbar for all browsers */
+  body {
+    -ms-overflow-style: none;
+    /* IE & Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
+  }
 }

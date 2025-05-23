@@ -69,7 +69,7 @@ const OrderSummary = () => {
       const { data } = await axios.post(
         "/api/order/create",
         {
-          address: selectedAddress._id, // Send only the ID
+          address: selectedAddress._id, 
           items: cartItemsArray,
           promoCode,
         },

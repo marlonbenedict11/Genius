@@ -3,7 +3,7 @@ import connectDB from '@/config/db';
 import { getAuth } from '@clerk/nextjs/server';
 import Order from '@/models/Order';
 import authSeller from '@/lib/authSeller';
-import Address from '@/models/Address';
+
 
 export async function GET(request) {
   try {

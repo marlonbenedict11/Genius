@@ -27,8 +27,8 @@ const Navbar = () => {
           Shop
         </Link>
         
-        <Link href="/" className="hover:text-gray-900 transition">
-          Contact
+        <Link href="/contact-us" className="hover:text-gray-900 transition">
+          Contact us
         </Link>
 
         {isSeller && <button onClick={() => router.push('/seller')} className="text-xs border px-4 py-1.5 rounded-full">Seller Dashboard</button>}
@@ -61,7 +61,7 @@ const Navbar = () => {
   )
 }
 
-      </ul>
+</ul>
 
 <div className="flex items-center md:hidden gap-3">
   {isSeller && (

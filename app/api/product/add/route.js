@@ -37,7 +37,7 @@ export async function POST(request) {
 
     const files = formData.getAll("images");
 
-    // Validate required fields
+    
     if (!name || !description || !category || !price || !files || files.length === 0) {
       return NextResponse.json(
         { success: false, message: "Missing required fields or no files uploaded" },

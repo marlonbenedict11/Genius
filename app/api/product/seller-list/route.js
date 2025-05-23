@@ -18,7 +18,7 @@ export async function GET(request) {
       });
     }
 
-    const products = await Product.find({ userId }); // optional: limit to the seller's products
+    const products = await Product.find({ userId });
     return NextResponse.json({ success: true, products });
   } catch (error) {
     return NextResponse.json({

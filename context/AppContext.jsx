@@ -149,7 +149,7 @@ export const AppContextProvider = (props) => {
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
       fetchUserData();
-      fetchCartData(); // load cart from DB
+      fetchCartData(); 
     }
   }, [isLoaded, isSignedIn, user]);
 
