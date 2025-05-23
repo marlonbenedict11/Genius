@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
     }
   ],
   amount: { type: Number, required: true },
-  address: { type: String, required: true, ref: 'Address' },
+  address: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Address' }, // ✅ Fixed here
   status: {
     type: String,
     enum: ['Order Placed', 'Shipped', 'Delivered', 'Cancelled'],

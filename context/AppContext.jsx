@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { useAuth } from '@clerk/nextjs';
 import axios from 'axios';
@@ -59,6 +59,21 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  const fetchCartData = async () => {
+    try {
+      const token = await getToken();
+      const { data } = await axios.get('/api/cart/get', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        setCartItems(data.cartItems || {});
+      }
+    } catch (error) {
+      console.error('Error fetching cart data:', error?.response?.data || error.message);
+    }
+  };
+
   const addToCart = async (itemId) => {
     const cartData = { ...cartItems };
     cartData[itemId] = (cartData[itemId] || 0) + 1;
@@ -100,13 +115,7 @@ export const AppContextProvider = (props) => {
   };
 
   const getCartCount = () => {
-    let totalCount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        totalCount += cartItems[item];
-      }
-    }
-    return totalCount;
+    return Object.values(cartItems).reduce((acc, qty) => acc + qty, 0);
   };
 
   const getCartAmount = () => {
@@ -120,6 +129,19 @@ export const AppContextProvider = (props) => {
     return parseFloat(totalAmount.toFixed(2));
   };
 
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Save cart to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
   useEffect(() => {
     fetchProductData();
   }, []);
@@ -127,6 +149,7 @@ export const AppContextProvider = (props) => {
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
       fetchUserData();
+      fetchCartData(); // load cart from DB
     }
   }, [isLoaded, isSignedIn, user]);
 
@@ -147,8 +170,6 @@ export const AppContextProvider = (props) => {
     updateCartQuantity,
     getCartCount,
     getCartAmount,
-    // cartCount, // Use if using memoized version
-    // cartAmount // Use if using memoized version
   };
 
   return (
