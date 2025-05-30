@@ -32,7 +32,7 @@ export async function POST(request) {
       amount += product.offerPrice * items[i].quantity;
     }
 
-    amount += Math.floor(amount * 0.02); // Add 2% fee
+    amount += Math.floor(amount * 0.05); // Add 2% fee
 
     // ✅ Save order to DB
     const newOrder = await Order.create({
