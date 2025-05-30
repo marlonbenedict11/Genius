@@ -101,7 +101,7 @@ const OrderSummary = () => {
 
   const cartCount = getCartCount?.() || 0;
   const cartAmount = getCartAmount?.() || 0;
-  const taxAmount = Math.floor(cartAmount * 0.02);
+  const taxAmount = Math.floor(cartAmount * 0.05);
   const totalAmount = cartAmount + taxAmount;
 
   return (

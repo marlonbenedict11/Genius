@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation"; // ✅ CORRECT for App Router
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 
@@ -24,6 +27,12 @@ const products = [
 ];
 
 const FeaturedProduct = () => {
+  const router = useRouter();
+
+  const handleBuyNow = () => {
+    router.push("/cart"); // ✅ Pushes to /cart
+  };
+
   return (
     <div className="mt-14">
       <div className="flex flex-col items-center">
@@ -44,8 +53,16 @@ const FeaturedProduct = () => {
               <p className="text-sm lg:text-base leading-5 max-w-60">
                 {description}
               </p>
-              <button className="flex items-center gap-1.5 bg-orange-600 px-4 py-2 rounded">
-                Buy now <Image className="h-3 w-3" src={assets.redirect_icon} alt="Redirect Icon" />
+              <button
+                onClick={handleBuyNow}
+                className="flex items-center gap-1.5 bg-orange-600 px-4 py-2 rounded"
+              >
+                Buy now{" "}
+                <Image
+                  className="h-3 w-3"
+                  src={assets.redirect_icon}
+                  alt="Redirect Icon"
+                />
               </button>
             </div>
           </div>

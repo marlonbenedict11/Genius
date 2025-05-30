@@ -17,27 +17,27 @@ const AboutUs = () => {
           {/* Image */}
           <div className="md:w-1/2">
             <img
-              src="/about-image.jpg"
-              alt="About Genius Store"
+              src="about.jpg"
+              alt="About Repo Tech Store"
               className="rounded-lg shadow-lg w-full h-auto object-cover"
             />
           </div>
 
           {/* Content */}
           <div className="md:w-1/2 space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-800">Welcome to Genius Store</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">Welcome to Repo Tech Store</h2>
             <p className="text-gray-600">
-              Genius is your go-to destination for high-quality, affordable, and stylish products.
+            Repo Tech is your go-to destination for high-quality, affordable, and stylish products.
               We are passionate about delivering an exceptional shopping experience, combining
               innovation and reliability to meet your daily lifestyle needs.
             </p>
             <p className="text-gray-600">
               Whether you're looking for the latest gadgets, trendy fashion, or home essentials —
-              we’ve got you covered. At Genius, we believe in empowering our customers by offering
+              we’ve got you covered. At Repo Tech, we believe in empowering our customers by offering
               exceptional service and unmatched convenience.
             </p>
             <p className="text-gray-600">
-              Join thousands of satisfied customers who trust Genius Store for quality and value.
+              Join thousands of satisfied customers who trust  Repo Tech Store for quality and value.
             </p>
           </div>
         </div>

@@ -15,6 +15,13 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [editProductId, setEditProductId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    category: "",
+    offerPrice: ""
+  });
+
   const fetchSellerProduct = async () => {
     try {
       const token = await getToken();
@@ -41,6 +48,46 @@ const ProductList = () => {
       fetchSellerProduct();
     }
   }, [user]);
+
+  const handleEditClick = (product) => {
+    setEditProductId(product._id);
+    setEditFormData({
+      name: product.name,
+      category: product.category,
+      offerPrice: product.offerPrice,
+    });
+  };
+
+  const handleEditChange = (e) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async (id) => {
+    try {
+      const token = await getToken();
+      const { data } = await axios.put(`/api/product/${id}`, editFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (data.success) {
+        toast.success("Product updated");
+        setEditProductId(null);
+        setEditFormData({});
+        fetchSellerProduct();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error("Update failed");
+    }
+  };
+
+  const handleCancel = () => {
+    setEditProductId(null);
+    setEditFormData({});
+  };
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
@@ -75,24 +122,86 @@ const ProductList = () => {
                             height={64}
                           />
                         </div>
-                        <span className="truncate w-full">{product.name}</span>
-                      </td>
-                      <td className="px-4 py-3 max-sm:hidden">{product.category}</td>
-                      <td className="px-4 py-3">${Number(product.offerPrice).toFixed(2)}</td>
-                      <td className="px-4 py-3 max-sm:hidden">
-                        <button
-                          onClick={() => router.push(`/product/${product._id}`)}
-                          className="flex items-center gap-1 px-1.5 md:px-3.5 py-2 bg-orange-600 text-white rounded-md"
-                        >
-                          <span className="hidden md:block">Visit</span>
-                          <Image
-                            className="h-3.5"
-                            src={assets.redirect_icon}
-                            alt="redirect_icon"
-                            width={14}
-                            height={14}
+                        {editProductId === product._id ? (
+                          <input
+                            type="text"
+                            name="name"
+                            value={editFormData.name}
+                            onChange={handleEditChange}
+                            className="border px-2 py-1 rounded w-full"
                           />
-                        </button>
+                        ) : (
+                          <span className="truncate w-full">{product.name}</span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3 max-sm:hidden">
+                        {editProductId === product._id ? (
+                          <input
+                            type="text"
+                            name="category"
+                            value={editFormData.category}
+                            onChange={handleEditChange}
+                            className="border px-2 py-1 rounded w-full"
+                          />
+                        ) : (
+                          product.category
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3">
+                        {editProductId === product._id ? (
+                          <input
+                            type="number"
+                            name="offerPrice"
+                            value={editFormData.offerPrice}
+                            onChange={handleEditChange}
+                            className="border px-2 py-1 rounded w-full"
+                          />
+                        ) : (
+                          `UGX ${Number(product.offerPrice).toLocaleString('en-UG')}`
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3 max-sm:hidden">
+                        {editProductId === product._id ? (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleSave(product._id)}
+                              className="bg-green-600 text-white px-3 py-1 rounded"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={handleCancel}
+                              className="bg-gray-400 text-white px-3 py-1 rounded"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditClick(product)}
+                              className="bg-blue-600 text-white px-3 py-1 rounded"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => router.push(`/product/${product._id}`)}
+                              className="flex items-center gap-1 px-3 py-1 bg-orange-600 text-white rounded"
+                            >
+                              Visit
+                              <Image
+                                className="h-3.5"
+                                src={assets.redirect_icon}
+                                alt="redirect_icon"
+                                width={14}
+                                height={14}
+                              />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}

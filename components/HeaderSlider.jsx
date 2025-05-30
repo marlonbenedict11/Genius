@@ -1,8 +1,13 @@
+'use client'; // Ensure this is at the very top
+
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 
 const HeaderSlider = () => {
+  const router = useRouter(); // ✅ Initialize useRouter
+
   const sliderData = [
     {
       id: 1,
@@ -45,13 +50,15 @@ const HeaderSlider = () => {
     setCurrentSlide(index);
   };
 
+  const goToAllProducts = () => {
+    router.push("/all-products"); // ✅ Navigate to all-products
+  };
+
   return (
     <div className="overflow-hidden relative w-full">
       <div
         className="flex transition-transform duration-700 ease-in-out"
-        style={{
-          transform: `translateX(-${currentSlide * 100}%)`,
-        }}
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {sliderData.map((slide, index) => (
           <div
@@ -65,6 +72,7 @@ const HeaderSlider = () => {
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">
                 <button
+                  onClick={goToAllProducts} // ✅ Attach navigation
                   className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium"
                   aria-label={`Buy now ${slide.title}`}
                 >
@@ -90,8 +98,8 @@ const HeaderSlider = () => {
                 className="md:w-72 w-48"
                 src={slide.imgSrc}
                 alt={`Slide ${index + 1}`}
-                width={300} // Set width for optimization
-                height={200} // Set height for optimization
+                width={300}
+                height={200}
               />
             </div>
           </div>

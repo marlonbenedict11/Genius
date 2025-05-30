@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 const NewsLetter = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = () => {
+    if (!email) {
+      alert("Please enter a valid email.");
+      return;
+    }
+    // Simulate a submission
+    alert(`Subscribed with: ${email}`);
+    setEmail("");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-2 pt-8 pb-14">
       <h1 className="md:text-4xl text-2xl font-medium">
@@ -14,9 +26,14 @@ const NewsLetter = () => {
         <input
           className="border border-gray-500/30 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500"
           type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email id"
         />
-        <button className="md:px-12 px-8 h-full text-white bg-orange-600 rounded-md rounded-l-none">
+        <button
+          className="md:px-12 px-8 h-full text-white bg-orange-600 rounded-md rounded-l-none"
+          onClick={handleSubscribe}
+        >
           Subscribe
         </button>
       </div>

@@ -29,7 +29,7 @@ const ContactUs = () => {
               <FaEnvelope className="text-orange-600 text-xl mt-1" />
               <div>
                 <h2 className="text-lg font-semibold">Email</h2>
-                <p>support@Geniusstore.com</p>
+                <p>support@Repo Tech store.com</p>
               </div>
             </div>
 
