@@ -9,6 +9,19 @@ import { useAppContext } from '@/context/AppContext';
 const Cart = () => {
   const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
 
+  // Conversion rate (you might want to fetch this dynamically)
+  const USD_TO_UGX = 3700; // Example rate, adjust as needed
+
+  // Helper function to convert and format price
+  const formatPriceUGX = (priceUSD) => {
+    const priceUGX = priceUSD * USD_TO_UGX;
+    return new Intl.NumberFormat('en-UG', {
+      style: 'currency',
+      currency: 'UGX',
+      maximumFractionDigits: 0
+    }).format(priceUGX);
+  };
+
   const handleQuantityChange = (productId, value) => {
     const quantity = Number(value);
     if (!isNaN(quantity) && quantity >= 0) {
@@ -82,7 +95,7 @@ const Cart = () => {
                           </button>
                         </div>
                       </td>
-                      <td className="py-4 md:px-4 px-1 text-gray-700">${product.offerPrice.toFixed(2)}</td>
+                      <td className="py-4 md:px-4 px-1 text-gray-700">{formatPriceUGX(product.offerPrice)}</td>
                       <td className="py-4 md:px-4 px-1">
                         <div className="flex items-center gap-1 md:gap-2">
                           <button
@@ -105,7 +118,7 @@ const Cart = () => {
                         </div>
                       </td>
                       <td className="py-4 md:px-4 px-1 text-gray-700">
-                        ${(product.offerPrice * quantity).toFixed(2)}
+                        {formatPriceUGX(product.offerPrice * quantity)}
                       </td>
                     </tr>
                   );
@@ -128,8 +141,8 @@ const Cart = () => {
           </button>
         </div>
 
-        {/* Order Summary Section */}
-        <OrderSummary />
+        {/* Order Summary Section - Make sure to update this component to also use UGX */}
+        <OrderSummary currency="UGX" conversionRate={USD_TO_UGX} />
       </div>
     </>
   );

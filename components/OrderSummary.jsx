@@ -25,6 +25,15 @@ const OrderSummary = () => {
     setIsMounted(true); // Prevent SSR mismatch
   }, []);
 
+  // Helper function to format UGX prices
+  const formatPriceUGX = (price) => {
+    return new Intl.NumberFormat('en-UG', {
+      style: 'currency',
+      currency: 'UGX',
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
   const fetchUserAddresses = async () => {
     try {
       const token = await getToken();
@@ -190,8 +199,7 @@ const OrderSummary = () => {
           <div className="flex justify-between text-base font-medium">
             <p className="uppercase text-gray-600">Items {cartCount}</p>
             <p className="text-gray-800">
-              {currency}
-              {cartAmount}
+              {formatPriceUGX(cartAmount)}
             </p>
           </div>
           <div className="flex justify-between">
@@ -199,17 +207,15 @@ const OrderSummary = () => {
             <p className="font-medium text-gray-800">Free</p>
           </div>
           <div className="flex justify-between">
-            <p className="text-gray-600">Tax (2%)</p>
+            <p className="text-gray-600">Tax (5%)</p>
             <p className="font-medium text-gray-800">
-              {currency}
-              {taxAmount}
+              {formatPriceUGX(taxAmount)}
             </p>
           </div>
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
-              {currency}
-              {totalAmount}
+              {formatPriceUGX(totalAmount)}
             </p>
           </div>
         </div>
