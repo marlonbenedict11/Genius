@@ -11,7 +11,7 @@ import { useAppContext } from "@/context/AppContext";
 
 const Product = () => {
     const { id } = useParams();
-    const { products, router, addToCart } = useAppContext();
+    const { products, router, addToCart, currency, convertToUGX } = useAppContext();
 
     const [mainImage, setMainImage] = useState(null);
     const [productData, setProductData] = useState(null);
@@ -31,11 +31,26 @@ const Product = () => {
     const {
         name = "Product Name",
         description = "No description available.",
-        offerPrice = "0.00",
-        price = "0.00",
+        offerPrice = 0,
+        price = 0,
         images = [],
         category = "General",
     } = productData;
+
+    // Format price in UGX
+    const formatPrice = (price) => {
+        if (currency === 'UGX') {
+            return new Intl.NumberFormat('en-UG', {
+                style: 'currency',
+                currency: 'UGX',
+                maximumFractionDigits: 0
+            }).format(convertToUGX ? convertToUGX(price) : price);
+        }
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(price);
+    };
 
     return (
         <>
@@ -91,12 +106,14 @@ const Product = () => {
                             <p>(4.5)</p>
                         </div>
                         <p className="text-gray-600 mt-3">{description}</p>
-                        <p className="text-3xl font-medium mt-6">
-                            ${offerPrice}
-                            <span className="text-base font-normal text-gray-800/60 line-through ml-2">
-                                ${price}
-                            </span>
-                        </p>
+                        <div className="text-3xl font-medium mt-6">
+                            {formatPrice(offerPrice)}
+                            {offerPrice < price && (
+                                <span className="text-base font-normal text-gray-800/60 line-through ml-2">
+                                    {formatPrice(price)}
+                                </span>
+                            )}
+                        </div>
 
                         <hr className="bg-gray-600 my-6" />
 
