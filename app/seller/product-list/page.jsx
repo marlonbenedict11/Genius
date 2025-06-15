@@ -111,99 +111,147 @@ const ProductList = () => {
                 </thead>
                 <tbody className="text-sm text-gray-500">
                   {products.map((product) => (
-                    <tr key={product._id} className="border-t border-gray-500/20">
-                      <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                        <div className="bg-gray-500/10 rounded p-2">
-                          <Image
-                            src={product.images?.[0] || "/fallback.jpg"}
-                            alt="Product Image"
-                            className="w-16 h-16 object-cover rounded"
-                            width={64}
-                            height={64}
-                          />
-                        </div>
-                        {editProductId === product._id ? (
-                          <input
-                            type="text"
-                            name="name"
-                            value={editFormData.name}
-                            onChange={handleEditChange}
-                            className="border px-2 py-1 rounded w-full"
-                          />
-                        ) : (
-                          <span className="truncate w-full">{product.name}</span>
-                        )}
-                      </td>
-
-                      <td className="px-4 py-3 max-sm:hidden">
-                        {editProductId === product._id ? (
-                          <input
-                            type="text"
-                            name="category"
-                            value={editFormData.category}
-                            onChange={handleEditChange}
-                            className="border px-2 py-1 rounded w-full"
-                          />
-                        ) : (
-                          product.category
-                        )}
-                      </td>
-
-                      <td className="px-4 py-3">
-                        {editProductId === product._id ? (
-                          <input
-                            type="number"
-                            name="offerPrice"
-                            value={editFormData.offerPrice}
-                            onChange={handleEditChange}
-                            className="border px-2 py-1 rounded w-full"
-                          />
-                        ) : (
-                          `UGX ${Number(product.offerPrice).toLocaleString('en-UG')}`
-                        )}
-                      </td>
-
-                      <td className="px-4 py-3 max-sm:hidden">
-                        {editProductId === product._id ? (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleSave(product._id)}
-                              className="bg-green-600 text-white px-3 py-1 rounded"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={handleCancel}
-                              className="bg-gray-400 text-white px-3 py-1 rounded"
-                            >
-                              Cancel
-                            </button>
+                    <React.Fragment key={product._id}>
+                      <tr className="border-t border-gray-500/20">
+                        <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
+                          <div className="bg-gray-500/10 rounded p-2">
+                            <Image
+                              src={product.images?.[0] || "/fallback.jpg"}
+                              alt="Product Image"
+                              className="w-16 h-16 object-cover rounded"
+                              width={64}
+                              height={64}
+                            />
                           </div>
-                        ) : (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleEditClick(product)}
-                              className="bg-blue-600 text-white px-3 py-1 rounded"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => router.push(`/product/${product._id}`)}
-                              className="flex items-center gap-1 px-3 py-1 bg-orange-600 text-white rounded"
-                            >
-                              Visit
-                              <Image
-                                className="h-3.5"
-                                src={assets.redirect_icon}
-                                alt="redirect_icon"
-                                width={14}
-                                height={14}
-                              />
-                            </button>
+                          {editProductId === product._id ? (
+                            <input
+                              type="text"
+                              name="name"
+                              value={editFormData.name}
+                              onChange={handleEditChange}
+                              className="border px-2 py-1 rounded w-full"
+                            />
+                          ) : (
+                            <span className="truncate w-full">{product.name}</span>
+                          )}
+                        </td>
+
+                        <td className="px-4 py-3 max-sm:hidden">
+                          {editProductId === product._id ? (
+                            <input
+                              type="text"
+                              name="category"
+                              value={editFormData.category}
+                              onChange={handleEditChange}
+                              className="border px-2 py-1 rounded w-full"
+                            />
+                          ) : (
+                            product.category
+                          )}
+                        </td>
+
+                        <td className="px-4 py-3">
+                          {editProductId === product._id ? (
+                            <input
+                              type="number"
+                              name="offerPrice"
+                              value={editFormData.offerPrice}
+                              onChange={handleEditChange}
+                              className="border px-2 py-1 rounded w-full"
+                            />
+                          ) : (
+                            `UGX ${Number(product.offerPrice).toLocaleString('en-UG')}`
+                          )}
+                        </td>
+
+                        <td className="px-4 py-3 max-sm:hidden">
+                          {editProductId === product._id ? (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleSave(product._id)}
+                                className="bg-green-600 text-white px-3 py-1 rounded"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={handleCancel}
+                                className="bg-gray-400 text-white px-3 py-1 rounded"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEditClick(product)}
+                                className="bg-blue-600 text-white px-3 py-1 rounded"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => router.push(`/product/${product._id}`)}
+                                className="flex items-center gap-1 px-3 py-1 bg-orange-600 text-white rounded"
+                              >
+                                Visit
+                                <Image
+                                  className="h-3.5"
+                                  src={assets.redirect_icon}
+                                  alt="redirect_icon"
+                                  width={14}
+                                  height={14}
+                                />
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+
+                      {/* Mobile-only action row */}
+                      <tr className="sm:hidden">
+                        <td colSpan={3} className="px-4 pb-4">
+                          <div className="flex flex-wrap gap-2">
+                            {editProductId === product._id ? (
+                              <>
+                                <button
+                                  onClick={() => handleSave(product._id)}
+                                  className="bg-green-600 text-white px-3 py-1 rounded"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={handleCancel}
+                                  className="bg-gray-400 text-white px-3 py-1 rounded"
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => handleEditClick(product)}
+                                  className="bg-blue-600 text-white px-3 py-1 rounded"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => router.push(`/product/${product._id}`)}
+                                  className="flex items-center gap-1 px-3 py-1 bg-orange-600 text-white rounded"
+                                >
+                                  Visit
+                                  <Image
+                                    className="h-3.5"
+                                    src={assets.redirect_icon}
+                                    alt="redirect_icon"
+                                    width={14}
+                                    height={14}
+                                  />
+                                </button>
+                              </>
+                            )}
                           </div>
-                        )}
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
