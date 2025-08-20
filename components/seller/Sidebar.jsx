@@ -32,6 +32,8 @@ const SideBar = () => {
                                 src={item.icon}
                                 alt={`${item.name.toLowerCase()}_icon`}
                                 className="w-7 h-7"
+                                width={28}
+                                height={28}
                             />
                             <p className='md:block hidden text-center'>{item.name}</p>
                         </div>

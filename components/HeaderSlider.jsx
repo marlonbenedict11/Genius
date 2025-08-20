@@ -95,11 +95,12 @@ const HeaderSlider = () => {
             </div>
             <div className="flex items-center flex-1 justify-center">
               <Image
-                className="md:w-72 w-48"
+                className=""
                 src={slide.imgSrc}
                 alt={`Slide ${index + 1}`}
-                width={300}
-                height={200}
+                width={600}
+                height={400}
+                priority={false}
               />
             </div>
           </div>

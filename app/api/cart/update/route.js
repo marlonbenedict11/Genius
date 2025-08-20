@@ -5,8 +5,7 @@ import User from "@/models/User";
 
 export async function POST(request) {
   try {
-    const { userId } = getAuth(request);
-    console.log("Clerk user ID:", userId);
+  const { userId } = getAuth(request);
 
     if (!userId) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });

@@ -1,5 +1,6 @@
-'use client';
+ 'use client';
 import React from 'react';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -16,10 +17,12 @@ const AboutUs = () => {
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
           {/* Image */}
           <div className="md:w-1/2">
-            <img
-              src="about.jpg"
+            <Image
+              src="/about.jpg"
               alt="About Repo Tech Store"
               className="rounded-lg shadow-lg w-full h-auto object-cover"
+              width={800}
+              height={500}
             />
           </div>
 
