@@ -1,3 +1,4 @@
+'use client';
 import React from 'react'
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
@@ -21,11 +22,12 @@ const ProductCard = ({ product }) => {
         >
             <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
                 <Image
-                    src={product.images?.[0] || '/fallback.jpg'} 
+                    src={product.images?.[0] || '/fallback.jpg'}
                     alt={product.name}
-                    className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
-                    width={800}
-                    height={800}
+                    className="group-hover:scale-105 transition object-cover"
+                    width={400}
+                    height={400}
+                    priority={false}
                 />
 
                 <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md">
@@ -33,6 +35,8 @@ const ProductCard = ({ product }) => {
                         className="h-3 w-3"
                         src={assets.heart_icon}
                         alt="heart_icon"
+                        width={12}
+                        height={12}
                     />
                 </button>
             </div>
@@ -42,18 +46,19 @@ const ProductCard = ({ product }) => {
             <div className="flex items-center gap-2">
                 <p className="text-xs">{4.5}</p>
                 <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                        <Image
-                            key={index}
-                            className="h-3 w-3"
-                            src={
-                                index < Math.floor(4)
-                                    ? assets.star_icon
-                                    : assets.star_dull_icon
-                            }
-                            alt="star_icon"
-                        />
-                    ))}
+                    {Array.from({ length: 5 }).map((_, index) => {
+                        const rating = product?.rating ?? 4.5;
+                        return (
+                            <Image
+                                key={`star-${product?._id || 'p'}-${index}`}
+                                className="h-3 w-3"
+                                src={index < Math.floor(rating) ? assets.star_icon : assets.star_dull_icon}
+                                alt="star_icon"
+                                width={12}
+                                height={12}
+                            />
+                        );
+                    })}
                 </div>
             </div>
 

@@ -70,7 +70,8 @@ export const createUserOrder = inngest.createFunction(
     const orders = events
       .filter(event => event.data?.userId && event.data?.items?.length > 0)
       .map(event => ({
-        userId: event.data.userId,
+  orderId: event.data.orderId,
+  userId: event.data.userId,
         items: event.data.items,
         amount: event.data.amount,
         address: event.data.address,
@@ -84,9 +85,22 @@ export const createUserOrder = inngest.createFunction(
 
     try {
       await connectDB();
-      await Order.insertMany(orders);
-      console.log(`Inserted ${orders.length} orders`);
-      return { success: true, processed: orders.length };
+      // Insert orders but skip duplicates (by orderId) to make handler idempotent
+      let processed = 0;
+      for (const o of orders) {
+        if (o.orderId) {
+          const existing = await Order.findOne({ _id: o.orderId }).lean();
+          if (existing) continue; // skip duplicate
+          // ensure _id is set to the provided orderId
+          await Order.create({ _id: o.orderId, userId: o.userId, items: o.items, amount: o.amount, address: o.address, date: o.date });
+          processed++;
+        } else {
+          await Order.create({ userId: o.userId, items: o.items, amount: o.amount, address: o.address, date: o.date });
+          processed++;
+        }
+      }
+      console.info(`Processed ${processed} orders`);
+      return { success: true, processed };
     } catch (error) {
       console.error("Error inserting orders:", error);
       return { success: false, error: error.message };

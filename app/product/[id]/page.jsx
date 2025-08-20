@@ -63,25 +63,26 @@ const Product = () => {
                             <Image
                                 src={mainImage || "/fallback.jpg"}
                                 alt="Product image"
-                                className="w-full h-auto object-cover mix-blend-multiply"
-                                width={1280}
-                                height={720}
+                                className="object-cover mix-blend-multiply"
+                                width={800}
+                                height={600}
+                                priority={true}
                             />
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
                             {images.map((image, index) => (
                                 <div
-                                    key={index}
+                                    key={image || index}
                                     onClick={() => setMainImage(image)}
                                     className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
                                 >
                                     <Image
                                         src={image}
                                         alt={`Thumbnail ${index}`}
-                                        className="w-full h-auto object-cover mix-blend-multiply"
-                                        width={1280}
-                                        height={720}
+                                        className="object-cover mix-blend-multiply"
+                                        width={320}
+                                        height={240}
                                     />
                                 </div>
                             ))}
@@ -99,9 +100,11 @@ const Product = () => {
                                         className="h-4 w-4"
                                         src={assets.star_icon}
                                         alt="star_icon"
+                    width={16}
+                    height={16}
                                     />
                                 ))}
-                                <Image className="h-4 w-4" src={assets.star_dull_icon} alt="star_dull_icon" />
+                <Image className="h-4 w-4" src={assets.star_dull_icon} alt="star_dull_icon" width={16} height={16} />
                             </div>
                             <p>(4.5)</p>
                         </div>
@@ -168,8 +171,8 @@ const Product = () => {
                         {products
                             .filter((p) => p._id !== id)
                             .slice(0, 5)
-                            .map((product, index) => (
-                                <ProductCard key={index} product={product} />
+                            .map((product) => (
+                                <ProductCard key={product._id} product={product} />
                             ))}
                     </div>
                     <button className="px-8 py-2 mb-16 border rounded text-gray-500/70 hover:bg-slate-50/90 transition">

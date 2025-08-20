@@ -102,6 +102,8 @@ const AddAddress = () => {
           className="md:mr-16 mt-16 md:mt-0"
           src={assets.my_location_image}
           alt="my_location_image"
+          width={360}
+          height={300}
         />
       </div>
       <Footer />

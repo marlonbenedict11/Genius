@@ -56,6 +56,8 @@ const Orders = () => {
                     className="w-16 h-16 object-cover"
                     src={assets.box_icon}
                     alt="box_icon"
+                    width={64}
+                    height={64}
                   />
                   <div>
                     <p className="font-medium text-gray-700">

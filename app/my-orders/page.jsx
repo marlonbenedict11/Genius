@@ -80,7 +80,7 @@ const MyOrders = () => {
                   <div className="min-w-[180px]">
                     <p className="font-medium">{order.address?.fullName}</p>
                     <p>{order.address?.area}</p>
-                    <p>{`${order.address?.city}, ${order.address?.state}`}</p>
+                    <p>{`${order.address?.city || ''}, ${order.address?.state || ''}`}</p>
                     <p>{order.address?.phoneNumber}</p>
                   </div>
 

@@ -1,8 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useUser } from '@clerk/nextjs';
-import { useAuth } from '@clerk/nextjs';
+import { useUser, useAuth } from '@clerk/nextjs';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 

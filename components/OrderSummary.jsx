@@ -150,13 +150,13 @@ const OrderSummary = () => {
 
             {isMounted && isDropdownOpen && (
               <ul className="absolute w-full bg-white border shadow-md mt-1 z-10 py-1.5 max-h-64 overflow-y-auto">
-                {userAddresses.map((address, index) => (
+                {userAddresses.map((address) => (
                   <li
-                    key={index}
+                    key={address._id || address.id}
                     onClick={() => handleAddressSelect(address)}
                     className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
                   >
-                    {address.fullName}, {address.area}, {address.city}, {address.state}
+                    {address?.fullName}, {address?.area}, {address?.city}, {address?.state}
                   </li>
                 ))}
                 <li

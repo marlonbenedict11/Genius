@@ -66,7 +66,7 @@ const AddProduct = () => {
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
             {[...Array(4)].map((_, index) => (
-              <label key={index} htmlFor={`image${index}`}>
+              <label key={`image-${index}`} htmlFor={`image${index}`}>
                 <input
                   onChange={(e) => {
                     const updatedFiles = [...files];

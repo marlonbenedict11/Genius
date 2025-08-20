@@ -43,10 +43,11 @@ export async function POST(request) {
       date: new Date(),
     });
 
-    // Send order created event
+    // Send order created event (include orderId for idempotency)
     await inngest.send({
       name: 'order/created',
       data: {
+        orderId: newOrder._id.toString(),
         userId,
         address,
         items,

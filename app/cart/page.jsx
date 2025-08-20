@@ -60,9 +60,9 @@ const Cart = () => {
                             <Image
                               src={product.images[0]}
                               alt={product.name}
-                              className="w-16 h-auto object-cover mix-blend-multiply"
-                              width={1280}
-                              height={720}
+                              className="object-cover mix-blend-multiply"
+                              width={120}
+                              height={120}
                             />
                           </div>
                           <button
@@ -90,7 +90,7 @@ const Cart = () => {
                             disabled={quantity <= 1}
                             className="disabled:opacity-50"
                           >
-                            <Image src={assets.decrease_arrow} alt="decrease" className="w-4 h-4" />
+                            <Image src={assets.decrease_arrow} alt="decrease" className="w-4 h-4" width={16} height={16} />
                           </button>
                           <input
                             type="number"
@@ -100,7 +100,7 @@ const Cart = () => {
                             min="1"
                           />
                           <button onClick={() => addToCart(product._id)}>
-                            <Image src={assets.increase_arrow} alt="increase" className="w-4 h-4" />
+                            <Image src={assets.increase_arrow} alt="increase" className="w-4 h-4" width={16} height={16} />
                           </button>
                         </div>
                       </td>
@@ -123,6 +123,8 @@ const Cart = () => {
               className="group-hover:-translate-x-1 transition-transform duration-200"
               src={assets.arrow_right_icon_colored}
               alt="arrow"
+              width={20}
+              height={20}
             />
             Continue Shopping
           </button>

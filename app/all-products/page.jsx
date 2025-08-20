@@ -59,8 +59,8 @@ const AllProducts = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         className="w-full md:w-1/4 p-2 border border-gray-300 rounded-md shadow-sm"
                     >
-                        {categories.map((cat, i) => (
-                            <option key={i} value={cat}>
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>
                                 {cat}
                             </option>
                         ))}
@@ -70,8 +70,8 @@ const AllProducts = () => {
                 {/* Product Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-12 pb-14 w-full">
                     {filteredProducts.length > 0 ? (
-                        filteredProducts.map((product, index) => (
-                            <ProductCard key={index} product={product} />
+                        filteredProducts.map((product) => (
+                            <ProductCard key={product._id} product={product} />
                         ))
                     ) : (
                         <p className="col-span-full text-center text-muted-foreground">
